@@ -1,3 +1,46 @@
 {
-  "extends": "next/core-web-vitals"
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es6": true,
+    "node": true
+  },
+  "parser": "@babel/eslint-parser",
+  "extends": [
+    "eslint:recommended",
+    "airbnb",
+    "airbnb/hooks",
+    "plugin:react/recommended",
+    "plugin:import/errors",
+    "plugin:import/warnings",
+    "plugin:jsx-a11y/recommended",
+    "prettier"
+  ],
+  "globals": {
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
+  },
+  "parserOptions": {
+    "ecmaVersion": 11,
+    "sourceType": "module"
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "plugins": ["react", "react-hooks"],
+  "rules": {
+    "react/react-in-jsx-scope": 0,
+    "import/prefer-default-export": 0,
+    "react/function-component-definition": 0,
+    "no-param-reassign": 0,
+    "linebreak-style": 0,
+    "react/jsx-props-no-spreading": 0,
+    "react-hooks/exhaustive-deps": "warn",
+    "@typescript-eslint/no-explicit-any": ["error", { "ignoreRestArgs": false }],
+    "prefer-destructuring": ["error", {"object": true, "array": false}],
+    "react/jsx-no-useless-fragment": ["error", {"allowExpressions":  true}],
+    "no-console": ["error", { "allow": ["warn", "error"] }]
+  }
 }
