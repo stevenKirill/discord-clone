@@ -6,48 +6,78 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
-model Post {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  title     String   @db.VarChar(255)
-  content   String?
-  published Boolean  @default(false)
-  author    User     @relation("WrittenPosts", fields: [authorId], references: [id])
-  authorId  String
-  favorutedBy User? @relation("Favorites", fields: [favoriteById], references: [id])
-  favoriteById String?
-  categories Category[]
+  provider     = "postgresql"
+  url          = env("DATABASE_URL")
 }
 
 model Profile {
-  id     String     @id @default(uuid())
-  bio    String?
-  user   User    @relation(fields: [userId], references: [id])
-  userId String     @unique
+  id String @id @default(uuid())
+  userId String @unique
+  name String
+  imageUrl String @db.Text
+  email String @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  servers Server[]
+  members Member[]
+  channels Channel[]
 }
 
-model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  name      String?
-  age       Int?
-  profile   Profile?
-  role Role         @default(BASIC)
-  writtenPosts Post[] @relation("WrittenPosts")
-  favouritePosts Post[] @relation("Favorites")
+model Server {
+  id String @id @default(uuid())
+  name String
+  imageUrl String @db.Text
+  inviteCode String @db.Text
+
+  profileId  String
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  members Member[]
+  channels Channel[]
 }
 
-model Category {
-  id      String   @id @default(uuid())
-  posts Post[]
-}
-
-enum Role {
+enum MemberRole {
   ADMIN
-  BASIC
+  MODERATOR
+  GUEST
+}
+
+model Member {
+  id String @id @default(uuid())
+  role MemberRole @default(GUEST)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  profileId String
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  serverId String
+  server Server @relation(fields: [serverId], references: [id], onDelete: Cascade)
+}
+
+enum ChannelType {
+  TEXT
+  AUDIO
+  VIDEO
+}
+
+model Channel {
+  id String @id @default(uuid())
+  name String
+  type ChannelType @default(TEXT)
+
+  profileId String
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  serverId String
+  server Server @relation(fields: [serverId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
