@@ -1,18 +1,18 @@
+import httpClient from "@/lib/http";
 import { currentUser, redirectToSignIn } from "@clerk/nextjs";
-import httpClient from "./http";
+import { IUser } from "./types";
 
-export const initUser = async () => {
+export const getUser = async () => {
   const clerkUser = await currentUser();
   if (!clerkUser) {
     return redirectToSignIn();
   }
-  const dbUser = await httpClient.post('user', { json: {
+  const dbUser: IUser = await httpClient.post('user', { json: {
     id: clerkUser.id,
     firstName: clerkUser.firstName,
     lastName: clerkUser.lastName,
     imageUrl: clerkUser.imageUrl,
     email: clerkUser.emailAddresses[0].emailAddress,
-  }}).json();
-  console.log(dbUser, 'CREATED USER');
+  } }).json();
   return dbUser;
-}
+};
