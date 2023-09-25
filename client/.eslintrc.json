@@ -6,6 +6,9 @@
     "node": true
   },
   "parser": "@babel/eslint-parser",
+  "parserOptions": {
+    "requireConfigFile": false
+  },
   "extends": [
     "eslint:recommended",
     "airbnb",
@@ -19,10 +22,6 @@
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"
-  },
-  "parserOptions": {
-    "ecmaVersion": 11,
-    "sourceType": "module"
   },
   "settings": {
     "react": {

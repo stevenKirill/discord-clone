@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { FileUploader } from '../ui/file-uploader';
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -71,7 +72,19 @@ export const CreateServerModal = () => {
             <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
               <div className='space-y-8 px-6'>
                 <div className='flex items-center justify-center text-center'>
-                  TODO: upload image
+                  <FormField
+                    control={form.control}
+                    name="imageUrl"
+                    render={({ field }) => (
+                      <FormControl>
+                        <FileUploader
+                          value={field.value}
+                          onChange={field.onChange}
+                          name="imageUrl"
+                        />
+                      </FormControl>
+                    )}
+                  />
                 </div>
                 <FormField
                   control={form.control}
