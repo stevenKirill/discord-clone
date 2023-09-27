@@ -1,7 +1,7 @@
 {
   "name": "discord-clone",
   "version": "1.0.0",
-  "description": "",
+  "description": "discord app",
   "main": "index.js",
   "scripts": {
     "client": "cd ./client && npm run dev",

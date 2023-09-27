@@ -6,5 +6,5 @@ export const getUserServer = async (userId: string) => {
   } catch (error) {
     console.error(error);
     return error;
-  }
-}
+  };
+};

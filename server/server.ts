@@ -1,14 +1,17 @@
-import express, { Request, Response } from 'express'
+import express, { Request, Response } from 'express';
 import prisma from './db';
-import { INTERNAL_SERVER_ERROR } from './constants';
+import { INTERNAL_SERVER_ERROR } from './src/constants';
 import cors from 'cors';
+import { v4 as uuidv4 } from 'uuid';
+import { MemberRole } from '@prisma/client';
+import { checkAuth } from './src/middlewares/auth';
 
 const app = express();
-app.use(cors())
-app.use(express.json())
+app.use(cors());
+app.use(express.json());
 const port = process.env.PORT || 3004;
 
-app.get("/", (req: Request, res: Response) => {
+app.get("/", (_req: Request, res: Response) => {
   res.json({ message: "alive" });
 });
 
@@ -53,11 +56,43 @@ app.get('/user-server/:id', async (req: Request, res: Response) => {
         members: {
           some: {
             profileId: id,
-          }
-        }
-      }
+          },
+        },
+      },
     });
     return res.status(200).json(server);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      reason: INTERNAL_SERVER_ERROR,
+    });
+  }
+});
+
+app.post('/server/create', checkAuth, async (req: Request, res: Response) => {
+  try {
+    const { name, imageUrl } = req.body;
+    const user = res.locals.user;
+    const newServer = await prisma.server.create({
+      data: {
+        profileId: user.id,
+        name,
+        imageUrl,
+        inviteCode: uuidv4(),
+        channels: {
+          create: {
+            name: "general",
+            profileId: user.id,
+          },
+        },
+        members: {
+          create: [
+            { profileId: user.id, role: MemberRole.ADMIN}
+          ]
+        },
+      },
+    });
+    return res.status(200).json(newServer);
   } catch (error) {
     console.error(error);
     return res.status(500).json({

@@ -23,6 +23,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { FileUploader } from '../ui/file-uploader';
+import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -35,6 +36,10 @@ const formSchema = z.object({
 
 export const CreateServerModal = () => {
   const [domLoaded, setDomLoaded] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const router = useRouter();
 
   useEffect(() => {
     setDomLoaded(true);
@@ -51,8 +56,18 @@ export const CreateServerModal = () => {
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values, '=> values');
-    console.log(form.formState)
+    setLoading(true);
+    try {
+      const res = await fetch('api/servers', { method: 'POST', body: JSON.stringify(values)});
+      const data = await res.json();
+      form.reset();
+      router.refresh();
+      window.location.reload();
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
   };
 
   return (

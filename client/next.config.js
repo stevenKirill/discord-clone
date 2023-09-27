@@ -4,7 +4,7 @@ const nextConfig = {
     domains: [
       'localhost:3000',
     ],
-  }
-}
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
