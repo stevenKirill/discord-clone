@@ -24,6 +24,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { FileUploader } from '../ui/file-uploader';
 import { useRouter } from 'next/navigation';
+import httpClient from '@/lib/http';
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -58,8 +59,10 @@ export const CreateServerModal = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setLoading(true);
     try {
-      const res = await fetch('api/servers', { method: 'POST', body: JSON.stringify(values)});
-      const data = await res.json();
+      const responseData = await httpClient.post('api/servers', {
+        json: JSON.stringify(values),
+      }).json();
+      console.log(responseData);
       form.reset();
       router.refresh();
       window.location.reload();

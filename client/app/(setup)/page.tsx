@@ -1,15 +1,25 @@
 import { redirect } from "next/navigation";
-import { getUser } from "../../services/user";
-import { getUserServer } from "@/services/server";
 import { CreateServerModal } from "@/components/modals/create-server";
+import { initialProfile } from "@/lib/initial-profile";
+import { db } from "@/lib/db";
 
 const SetupPage = async () => {
-  const user = await getUser();
-  const { id } = user;
-  const server = await getUserServer(id);
+  const profile = await initialProfile();
+
+  const server = await db.server.findFirst({
+    where: {
+      members: {
+        some: {
+          profileId: profile.id,
+        },
+      },
+    },
+  });
+
   if (server) {
     return redirect(`/servers/${server.id}`);
   }
+
   return <CreateServerModal />;
 }
 

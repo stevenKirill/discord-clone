@@ -26,7 +26,7 @@ export default function RootLayout({
             attribute="class"
             enableSystem={false}
             storageKey="app-theme"
-            //forcedTheme="dark"
+            forcedTheme="dark"
           >
             {children}
           </ThemeProvider>
